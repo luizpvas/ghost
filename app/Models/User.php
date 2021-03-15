@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Attachment\HasOneAttached;
 use App\Models\User\TwoFactorAuthentication;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Auth\Authenticatable;
@@ -21,6 +22,10 @@ class User extends ApplicationModel implements AuthorizableContract, Authenticat
      * @var array
      */
     protected $guarded = [];
+
+    protected $casts = [
+        'avatar' => HasOneAttached::class
+    ];
 
     /**
      * The attributes that should be hidden for arrays.

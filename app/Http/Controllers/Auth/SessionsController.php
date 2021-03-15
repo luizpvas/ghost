@@ -36,10 +36,23 @@ class SessionsController extends Controller
             if ($session->isActive()) {
                 return reflinks()->redirect('workspaces.index');
             } else {
+                Auth::logout();
                 return reflinks()->redirectSigned('auth.session_confirmations.create', ['session_id' => $session->id]);
             }
         } else {
-            return response()->json(['errors' => ['email' => __('Incorrect email and/or password.')]], 422);
+            $validation = ['email' => [__('Incorrect email and/or password.')]];
+            return response()->json(['errors' => $validation], 422);
         }
+    }
+
+    /**
+     * Signs out.
+     * 
+     * @return Illuminate\Http\Response
+     */
+    function destroy()
+    {
+        Auth::logout();
+        return reflinks()->redirect('auth.sessions.create');
     }
 }

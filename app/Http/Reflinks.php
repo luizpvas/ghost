@@ -29,8 +29,8 @@ class Reflinks implements Responsable
 
     /**
      * Similar to `redirect`, but signs the URL with a hash that ensures it has not been modified.
-     * See https://laravel.com/docs/8.x/urls#signed-urls for more details.
      * 
+     * @see https://laravel.com/docs/8.x/urls#signed-urls
      * @param  string $name
      * @param  array  $params
      * @return $this

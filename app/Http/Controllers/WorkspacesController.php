@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class WorkspacesController extends Controller
 {
-    //
+    /**
+     * Lists workspaces.
+     * 
+     * @return Illuminate\Http\Response
+     */
+    function index()
+    {
+        return view('workspaces.index');
+    }
 }

@@ -7,7 +7,7 @@
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
         <script src="{{ mix('js/app.js') }}"></script>
     </head>
-    <body>
+    <body class="font-sans text-base">
         @yield('content')
     </body>
 </html>

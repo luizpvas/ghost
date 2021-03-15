@@ -50,7 +50,7 @@ class SessionsControllerTest extends TestCase
         ]);
 
         // Then we should be authenticated
-        $this->assertEquals($user->id, Auth::id());
+        $this->assertFalse(Auth::check());
 
         // ... and we should be redirected to /workspaces
         $response->assertReflinksRedirect(route('auth.session_confirmations.create'));
@@ -66,5 +66,21 @@ class SessionsControllerTest extends TestCase
 
         // Then we should see validation error
         $response->assertJsonValidationErrors(['email']);
+    }
+
+    function test_signs_out()
+    {
+        // Given we're authenticated
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // When we sign out
+        $response = $this->deleteJson(route('auth.sessions.destroy', 'self'));
+
+        // Then the session should be deleted
+        $this->assertFalse(Auth::check());
+
+        // ... and we should be redirected to sign in
+        $response->assertReflinksRedirect(route('auth.sessions.create'));
     }
 }
