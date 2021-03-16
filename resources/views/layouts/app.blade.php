@@ -14,7 +14,7 @@
             </svg>
         </template>
     </head>
-    <body class="font-sans text-base">
+    <body class="bg-white text-black dark:bg-gray-700 dark:text-white font-sans text-base">
         @yield('content')
     </body>
 </html>

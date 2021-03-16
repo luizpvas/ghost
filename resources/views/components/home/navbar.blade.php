@@ -8,21 +8,46 @@
                     <button>{{ Auth::user()->name }}</button>
                 </x-slot>
 
-                <x-dropdown.link :href="route('workspaces.index')">
-                    <x-heroicon.solid.grid class="h-4 text-gray-500" />
-                    <span>{{ __('Workspaces') }}</span>
+                <x-dropdown.link :href="route('workspaces.index')" icon="heroicon.solid.grid">
+                    {{ __('Workspaces') }}
                 </x-dropdown.link>
 
-                <x-dropdown.link href="#">
-                    <x-heroicon.solid.user-circle class="h-4 text-gray-500" />
-                    <span>{{ __('Profile') }}</span>
+                <x-dropdown.link href="#" icon="heroicon.solid.user-circle">
+                    {{ __('Profile') }}
                 </x-dropdown.link>
 
                 <x-dropdown.divider />
 
-                <x-dropdown.link :href="route('auth.sessions.destroy', 'self')" method="DELETE" :data-disable-with="__('Signing out...')">
-                    <x-heroicon.solid.logout class="h-4 text-gray-500" />
-                    <span>{{ __('Sign out') }}</span>
+                <x-dropdown.custom
+                    x-data="{
+                        theme: localStorage.theme || 'light',
+                        setTheme: function(theme) {
+                            this.theme = theme
+                            localStorage.theme = theme
+
+                            if(theme == 'light') {
+                                document.documentElement.classList.remove('dark')
+                            } else {
+                                document.documentElement.classList.add('dark')
+                            }
+                        }
+                    }"
+                >
+                    <div class="w-full cursor-pointer">
+                        <div x-show="theme == 'light'" class="w-full flex items-center space-x-1" @click="setTheme('dark')">
+                            <x-heroicon.solid.light-bulb class="h-4 text-gray-500 dark:text-gray-300" />
+                            <span>Dark mode</span>
+                        </div>
+                        
+                        <div x-show="theme == 'dark'" class="w-full flex items-center space-x-1" @click="setTheme('light')">
+                            <x-heroicon.solid.light-bulb class="h-4 text-gray-500 dark:text-gray-300" />
+                            <span>Light mode</span>
+                        </div>
+                    </div>
+                </x-dropdown.custom>
+
+                <x-dropdown.link icon="heroicon.solid.logout" :href="route('auth.sessions.destroy', 'self')" method="DELETE" :data-disable-with="__('Signing out...')">
+                    {{ __('Sign out') }}
                 </x-dropdown.link>
             </x-dropdown>
         </div>

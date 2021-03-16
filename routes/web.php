@@ -4,7 +4,7 @@ use App\Http\Controllers\Auth\ProfilesController;
 use App\Http\Controllers\Auth\RegistrationsController;
 use App\Http\Controllers\Auth\SessionsController;
 use App\Http\Controllers\Auth\SignInByEmailOnlyController;
-use App\Http\Controllers\SessionConfirmationsController;
+use App\Http\Controllers\Auth\SessionConfirmationsController;
 use App\Http\Controllers\WorkspacesController;
 use Illuminate\Support\Facades\Route;
 

@@ -10,3 +10,7 @@ require('./reflinks')
 document.addEventListener('reflinks:load', () => {
     Alpine.discoverUninitializedComponents(Alpine.initializeComponent)
 })
+
+if (localStorage.theme == 'dark') {
+    document.documentElement.classList.add('dark')
+}

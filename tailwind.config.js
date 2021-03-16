@@ -3,7 +3,7 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
     purge: ['./resources/**/*.blade.php'],
-    darkMode: false, // or 'media' or 'class'
+    darkMode: 'class', // or 'media' or 'class'
     theme: {
         fontFamily: {
             // https://ant.design/docs/spec/font#Font-Family

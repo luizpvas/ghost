@@ -3822,6 +3822,10 @@ document.addEventListener('reflinks:load', function () {
   Alpine.discoverUninitializedComponents(Alpine.initializeComponent);
 });
 
+if (localStorage.theme == 'dark') {
+  document.documentElement.classList.add('dark');
+}
+
 /***/ }),
 
 /***/ "./resources/js/reflinks.js":
