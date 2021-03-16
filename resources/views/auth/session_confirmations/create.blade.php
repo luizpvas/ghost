@@ -7,6 +7,8 @@
     </div>
 
     <x-form :action="route('auth.session_confirmations.store')">
+        <input type="hidden" name="session_id" value="{{ request('session_id') }}" />
+
         <div class="space-y-unit">
             <div>
                 <div class="text-lg font-bold">{{ __('Check your inbox 📨') }}</div>
@@ -17,7 +19,8 @@
 
             <x-form.input :label="__('Please enter the confirmation code')" name="confirmation_code" type="text" maxlength="5" />
             <x-button primary :data-disable-with="__('Signing in...')">
-                {{ __('Sign in') }}
+                <span>{{ __('Confirm sign in') }}</span>
+                <x-heroicon.solid.arrow-right class="h-4" />
             </x-button>
         </div>
     </x-form>

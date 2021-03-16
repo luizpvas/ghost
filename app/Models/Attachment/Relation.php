@@ -3,7 +3,6 @@
 namespace App\Models\Attachment;
 
 use App\Models\Attachment;
-use Illuminate\Database\Eloquent\Relations\Relation as EloquentRelation;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -36,7 +35,7 @@ class Relation
     /**
      * Builds the attachment relation that can be either one or many.
      * 
-     * @param \Illuminate\Database\Eloquent\Model
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @param string $name
      * @param string $relation
      */
@@ -47,6 +46,12 @@ class Relation
         $this->relation = $relation;
     }
 
+    /**
+     * Attaches the given file.
+     * If the relation is `one` the previous attachment is deleted.
+     * 
+     * @param  mixed $file
+     */
     function attach($file)
     {
         if ($file instanceof UploadedFile) {
@@ -91,6 +96,13 @@ class Relation
      */
     function deleteExistingAttachment()
     {
+        try {
+            $this->model->id;
+        } catch (\Exception $err) {
+            dd($this->model->toArray());
+            // dd($err);
+        }
+
         $attachments = Attachment::where([
             'attachable_type' => $this->model->getMorphClass(),
             'attachable_id' => $this->model->id,

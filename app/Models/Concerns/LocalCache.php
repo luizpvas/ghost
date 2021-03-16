@@ -11,7 +11,7 @@ trait LocalCache
      * 
      * @var array
      */
-    protected $localCache = [];
+    private $localCache = [];
 
     /**
      * Reads or updates the local cache.

@@ -5,9 +5,6 @@
         <div>
             <x-dropdown>
                 <x-slot name="trigger">
-                    @if(Auth::user()->avatar->attached())
-                    @else
-                    @endif
                     <button>{{ Auth::user()->name }}</button>
                 </x-slot>
 

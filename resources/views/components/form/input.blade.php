@@ -3,7 +3,7 @@
         <input type="{{ $attributes->get('type', 'text') }}"
             name="{{ $name }}"
             class="
-                block w-full border rounded-sm py-1 px-2 transform duration-200 text-black
+                block w-full text-base border border-gray-300 rounded-sm py-1 px-2 transform duration-200 text-black
                 hover:border-blue-300
                 focus:border-blue-400 focus:ring-2 focus:ring-blue-100
 
