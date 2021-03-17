@@ -14,6 +14,7 @@
 
             <x-form action="{{ route('auth.profiles.update', $user) }}" method="PUT">
                 <div class="space-y-unit">
+                    <x-form.avatar name="avatar" :value="$user->avatar" :label="__('Profile picture')" />
                     <x-form.input name="name" :value="$user->name" :label="__('Name')" />
                     <x-form.input name="email" :value="$user->email" :label="__('E-mail address')" type="email" />
                     <x-form.select name="timezone" :options="\App\Models\User::timezoneOptions()" :value="$user->timezone" :label="__('Timezone')" />

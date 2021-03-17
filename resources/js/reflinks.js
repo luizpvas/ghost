@@ -30,6 +30,7 @@ function listenForClicksAndSubmitsRelativeTo(container, rootSelector) {
 
     container.addEventListener('submit', (ev) => {
         ev.preventDefault()
+
         let form = ev.target
         let action = form.getAttribute('action')
         let method = (form.getAttribute('method') || 'POST').toUpperCase()

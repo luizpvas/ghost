@@ -1,5 +1,5 @@
 <div data-field="{{ $name }}">
-    <label for="{{ $name }}" class="text-gray-900 dark:text-gray-200">{{ $attributes->get('label', $name) }}</label>
+    <label for="{{ $name }}" class="block text-gray-900 dark:text-gray-200">{{ $attributes->get('label', $name) }}</label>
 
     @if($attributes->has('hint'))
         <div class="text-sm text-gray-700 dark:text-gray-400">{!! $hint !!}</div>

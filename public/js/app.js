@@ -3809,8 +3809,6 @@ module.exports = {
   \*****************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-var alpine = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
-
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.Alpine = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
