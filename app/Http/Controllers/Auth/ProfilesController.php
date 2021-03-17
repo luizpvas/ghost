@@ -30,8 +30,9 @@ class ProfilesController extends Controller
         $this->authorize('edit', $user);
 
         $validated = request()->validate([
-            'name'   => ['sometimes', 'required'],
-            'avatar' => ['sometimes', 'file']
+            'name'                      => ['sometimes', 'required'],
+            'avatar'                    => ['sometimes', 'file'],
+            'two_factor_authentication' => ['sometimes', 'required']
         ]);
 
         $user->update($validated);

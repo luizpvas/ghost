@@ -5,3 +5,7 @@
 *:focus {
     outline: none !important;
 }
+
+reflinks-frame {
+    display: block;
+}

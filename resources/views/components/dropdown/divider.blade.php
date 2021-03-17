@@ -1,1 +1,1 @@
-<div class="h-px w-full my-1 bg-gray-200 dark:bg-gray-900"></div>
+<div class="h-px w-full my-1 bg-gray-200 dark:bg-gray-700"></div>

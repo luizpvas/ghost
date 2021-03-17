@@ -1,33 +1,47 @@
-document.addEventListener('click', (ev) => {
-    let target = interceptableTarget(ev.target)
-    if (!target) return
-    if (shouldIgnore(target)) return
+listenForClicksAndSubmitsRelativeTo(document, 'body')
 
-    ev.preventDefault()
+customElements.define(
+    'reflinks-frame',
+    class extends HTMLElement {
+        connectedCallback() {
+            if (!this.id) return console.error('reflinks-frame must have an id.', this)
 
-    let method = (target.getAttribute('method') || 'GET').toUpperCase()
-    if (method == 'GET') {
-        navigate(target.getAttribute('href'))
-    } else {
-        submit(target)
+            listenForClicksAndSubmitsRelativeTo(this, '#' + this.id)
+        }
     }
-})
+)
 
-document.addEventListener('submit', (ev) => {
-    ev.preventDefault()
-    let form = ev.target
-    let action = form.getAttribute('action')
-    let method = (form.getAttribute('method') || 'POST').toUpperCase()
+function listenForClicksAndSubmitsRelativeTo(container, rootSelector) {
+    container.addEventListener('click', (ev) => {
+        let target = interceptableTarget(ev.target)
+        if (!target) return
+        if (shouldIgnore(target)) return
 
-    if (method == 'GET') {
-        let querystring = new URLSearchParams(new FormData(form)).toString()
-        navigate(action + '?' + querystring)
-    } else {
-        submit(form)
-    }
-})
+        ev.preventDefault()
+        ev.stopPropagation()
 
-customElements.define('reflinks-frame', class extends HTMLElement {})
+        let method = (target.getAttribute('method') || 'GET').toUpperCase()
+        if (method == 'GET') {
+            navigate(target.getAttribute('href'), { rootSelector })
+        } else {
+            submit(target, { rootSelector })
+        }
+    })
+
+    container.addEventListener('submit', (ev) => {
+        ev.preventDefault()
+        let form = ev.target
+        let action = form.getAttribute('action')
+        let method = (form.getAttribute('method') || 'POST').toUpperCase()
+
+        if (method == 'GET') {
+            let querystring = new URLSearchParams(new FormData(form)).toString()
+            navigate(action + '?' + querystring, { rootSelector })
+        } else {
+            submit(form, { rootSelector })
+        }
+    })
+}
 
 /**
  * Checks if the given element should be intercepted for AJAX request on click.
@@ -63,18 +77,20 @@ function shouldIgnore(elm) {
  * Navigates to the given url.
  *
  * @param {string} url
+ * @param {*} opts
  * @return {Promise<void>}
  */
-async function navigate(url) {
+async function navigate(url, opts = {}) {
     window.history.pushState({ reflinks: true }, null, url)
 
     try {
         let { data } = await axios.get(url)
         let doc = document.createElement('html')
         doc.innerHTML = data
-        let newBody = doc.querySelector('body')
+        let newBody = doc.querySelector(opts.rootSelector)
+        let currentBody = document.body.parentElement.querySelector(opts.rootSelector)
 
-        document.body.parentElement.replaceChild(newBody, document.body)
+        currentBody.parentElement.replaceChild(newBody, currentBody)
 
         triggerEvent('reflinks:load')
     } catch (err) {
@@ -86,8 +102,9 @@ async function navigate(url) {
  * Submits the given form.
  *
  * @param {HTMLFormElement} method
+ * @param {*} opts
  */
-async function submit(target) {
+async function submit(target, opts = {}) {
     let method = target.getAttribute('method')
     let url = target.getAttribute('action') || target.getAttribute('href')
     let data = target.tagName == 'FORM' ? new FormData(target) : null
@@ -98,7 +115,8 @@ async function submit(target) {
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
     try {
-        await sendRequestExpectingDirectives({ method, url, data })
+        let response = await axios({ method, url, data })
+        applyDirectives(response.data.directives, opts)
     } catch (err) {
         if (err.response.status == 422) {
             showValidationErrors(target, err.response.data.errors)
@@ -109,24 +127,15 @@ async function submit(target) {
 }
 
 /**
- * Sends an AJAX request to the server expecting a JSON response with encoded directives.
- *
- * @param {*} options
- */
-async function sendRequestExpectingDirectives({ method, url, data }) {
-    let response = await axios({ method, url, data })
-    applyDirectives(response.data.directives)
-}
-
-/**
  * Applies the list of directives to redirect, append, update, delete, etc.
  *
  * @param {*} directives
+ * @param {*} opts
  */
-function applyDirectives(directives) {
+function applyDirectives(directives, opts) {
     for (let directive of directives) {
         if (directive.redirect) {
-            navigate(directive.redirect)
+            navigate(directive.redirect, opts)
         }
     }
 }

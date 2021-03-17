@@ -12,7 +12,7 @@
                     {{ __('Workspaces') }}
                 </x-dropdown.link>
 
-                <x-dropdown.link href="#" icon="heroicon.solid.user-circle">
+                <x-dropdown.link href="{{ route('auth.profiles.edit', auth()->id()) }}" icon="heroicon.solid.user-circle">
                     {{ __('Profile') }}
                 </x-dropdown.link>
 

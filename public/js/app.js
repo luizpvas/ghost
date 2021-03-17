@@ -3854,6 +3854,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -3874,32 +3878,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-document.addEventListener('click', function (ev) {
-  var target = interceptableTarget(ev.target);
-  if (!target) return;
-  if (shouldIgnore(target)) return;
-  ev.preventDefault();
-  var method = (target.getAttribute('method') || 'GET').toUpperCase();
-
-  if (method == 'GET') {
-    navigate(target.getAttribute('href'));
-  } else {
-    submit(target);
-  }
-});
-document.addEventListener('submit', function (ev) {
-  ev.preventDefault();
-  var form = ev.target;
-  var action = form.getAttribute('action');
-  var method = (form.getAttribute('method') || 'POST').toUpperCase();
-
-  if (method == 'GET') {
-    var querystring = new URLSearchParams(new FormData(form)).toString();
-    navigate(action + '?' + querystring);
-  } else {
-    submit(form);
-  }
-});
+listenForClicksAndSubmitsRelativeTo(document, 'body');
 customElements.define('reflinks-frame', /*#__PURE__*/function (_HTMLElement) {
   _inherits(_class, _HTMLElement);
 
@@ -3911,14 +3890,61 @@ customElements.define('reflinks-frame', /*#__PURE__*/function (_HTMLElement) {
     return _super.apply(this, arguments);
   }
 
+  _createClass(_class, [{
+    key: "connectedCallback",
+    value: function connectedCallback() {
+      if (!this.id) return console.error('reflinks-frame must have an id.', this);
+      listenForClicksAndSubmitsRelativeTo(this, '#' + this.id);
+    }
+  }]);
+
   return _class;
 }( /*#__PURE__*/_wrapNativeSuper(HTMLElement)));
+
+function listenForClicksAndSubmitsRelativeTo(container, rootSelector) {
+  container.addEventListener('click', function (ev) {
+    var target = interceptableTarget(ev.target);
+    if (!target) return;
+    if (shouldIgnore(target)) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    var method = (target.getAttribute('method') || 'GET').toUpperCase();
+
+    if (method == 'GET') {
+      navigate(target.getAttribute('href'), {
+        rootSelector: rootSelector
+      });
+    } else {
+      submit(target, {
+        rootSelector: rootSelector
+      });
+    }
+  });
+  container.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var form = ev.target;
+    var action = form.getAttribute('action');
+    var method = (form.getAttribute('method') || 'POST').toUpperCase();
+
+    if (method == 'GET') {
+      var querystring = new URLSearchParams(new FormData(form)).toString();
+      navigate(action + '?' + querystring, {
+        rootSelector: rootSelector
+      });
+    } else {
+      submit(form, {
+        rootSelector: rootSelector
+      });
+    }
+  });
+}
 /**
  * Checks if the given element should be intercepted for AJAX request on click.
  *
  * @param {HTMLElement} elm
  * @return {HTMLElement|null}
  */
+
 
 function interceptableTarget(elm) {
   var target = elm;
@@ -3950,6 +3976,7 @@ function shouldIgnore(elm) {
  * Navigates to the given url.
  *
  * @param {string} url
+ * @param {*} opts
  * @return {Promise<void>}
  */
 
@@ -3961,46 +3988,55 @@ function navigate(_x) {
  * Submits the given form.
  *
  * @param {HTMLFormElement} method
+ * @param {*} opts
  */
 
 
 function _navigate() {
   _navigate = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(url) {
-    var _yield$axios$get, data, doc, newBody;
+    var opts,
+        _yield$axios$get,
+        data,
+        doc,
+        newBody,
+        currentBody,
+        _args = arguments;
 
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
+            opts = _args.length > 1 && _args[1] !== undefined ? _args[1] : {};
             window.history.pushState({
               reflinks: true
             }, null, url);
-            _context.prev = 1;
-            _context.next = 4;
+            _context.prev = 2;
+            _context.next = 5;
             return axios.get(url);
 
-          case 4:
+          case 5:
             _yield$axios$get = _context.sent;
             data = _yield$axios$get.data;
             doc = document.createElement('html');
             doc.innerHTML = data;
-            newBody = doc.querySelector('body');
-            document.body.parentElement.replaceChild(newBody, document.body);
+            newBody = doc.querySelector(opts.rootSelector);
+            currentBody = document.body.parentElement.querySelector(opts.rootSelector);
+            currentBody.parentElement.replaceChild(newBody, currentBody);
             triggerEvent('reflinks:load');
-            _context.next = 16;
+            _context.next = 18;
             break;
 
-          case 13:
-            _context.prev = 13;
-            _context.t0 = _context["catch"](1);
+          case 15:
+            _context.prev = 15;
+            _context.t0 = _context["catch"](2);
             location = url;
 
-          case 16:
+          case 18:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[1, 13]]);
+    }, _callee, null, [[2, 15]]);
   }));
   return _navigate.apply(this, arguments);
 }
@@ -4009,105 +4045,75 @@ function submit(_x2) {
   return _submit.apply(this, arguments);
 }
 /**
- * Sends an AJAX request to the server expecting a JSON response with encoded directives.
+ * Applies the list of directives to redirect, append, update, delete, etc.
  *
- * @param {*} options
+ * @param {*} directives
+ * @param {*} opts
  */
 
 
 function _submit() {
   _submit = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(target) {
-    var method, url, data;
+    var opts,
+        method,
+        url,
+        data,
+        response,
+        _args2 = arguments;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
+            opts = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : {};
             method = target.getAttribute('method');
             url = target.getAttribute('action') || target.getAttribute('href');
             data = target.tagName == 'FORM' ? new FormData(target) : null;
             updateButtonsDisableWith(target);
             clearValidationErrors(target);
-            _context2.next = 7;
+            _context2.next = 8;
             return new Promise(function (resolve) {
               return setTimeout(resolve, 1000);
             });
 
-          case 7:
-            _context2.prev = 7;
-            _context2.next = 10;
-            return sendRequestExpectingDirectives({
-              method: method,
-              url: url,
-              data: data
-            });
-
-          case 10:
-            _context2.next = 15;
-            break;
-
-          case 12:
-            _context2.prev = 12;
-            _context2.t0 = _context2["catch"](7);
-
-            if (_context2.t0.response.status == 422) {
-              showValidationErrors(target, _context2.t0.response.data.errors);
-            }
-
-          case 15:
-            _context2.prev = 15;
-            restoreButtonsFromDisableWith(target);
-            return _context2.finish(15);
-
-          case 18:
-          case "end":
-            return _context2.stop();
-        }
-      }
-    }, _callee2, null, [[7, 12, 15, 18]]);
-  }));
-  return _submit.apply(this, arguments);
-}
-
-function sendRequestExpectingDirectives(_x3) {
-  return _sendRequestExpectingDirectives.apply(this, arguments);
-}
-/**
- * Applies the list of directives to redirect, append, update, delete, etc.
- *
- * @param {*} directives
- */
-
-
-function _sendRequestExpectingDirectives() {
-  _sendRequestExpectingDirectives = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(_ref) {
-    var method, url, data, response;
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            method = _ref.method, url = _ref.url, data = _ref.data;
-            _context3.next = 3;
+          case 8:
+            _context2.prev = 8;
+            _context2.next = 11;
             return axios({
               method: method,
               url: url,
               data: data
             });
 
-          case 3:
-            response = _context3.sent;
-            applyDirectives(response.data.directives);
+          case 11:
+            response = _context2.sent;
+            applyDirectives(response.data.directives, opts);
+            _context2.next = 18;
+            break;
 
-          case 5:
+          case 15:
+            _context2.prev = 15;
+            _context2.t0 = _context2["catch"](8);
+
+            if (_context2.t0.response.status == 422) {
+              showValidationErrors(target, _context2.t0.response.data.errors);
+            }
+
+          case 18:
+            _context2.prev = 18;
+            restoreButtonsFromDisableWith(target);
+            return _context2.finish(18);
+
+          case 21:
           case "end":
-            return _context3.stop();
+            return _context2.stop();
         }
       }
-    }, _callee3);
+    }, _callee2, null, [[8, 15, 18, 21]]);
   }));
-  return _sendRequestExpectingDirectives.apply(this, arguments);
+  return _submit.apply(this, arguments);
 }
 
-function applyDirectives(directives) {
+function applyDirectives(directives, opts) {
   var _iterator = _createForOfIteratorHelper(directives),
       _step;
 
@@ -4116,7 +4122,7 @@ function applyDirectives(directives) {
       var directive = _step.value;
 
       if (directive.redirect) {
-        navigate(directive.redirect);
+        navigate(directive.redirect, opts);
       }
     }
   } catch (err) {

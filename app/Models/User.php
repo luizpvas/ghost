@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Attachment\HasOneAttached;
+use App\Models\User\Timezonable;
 use App\Models\User\TwoFactorAuthentication;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Auth\Authenticatable;
@@ -13,7 +14,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 
 class User extends ApplicationModel implements AuthorizableContract, AuthenticatableContract
 {
-    use TwoFactorAuthentication;
+    use TwoFactorAuthentication, Timezonable;
     use Authenticatable, Authorizable, HasFactory, Notifiable;
 
     /**

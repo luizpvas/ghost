@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('two_factor_authentication')->default('disabled');
+            $table->string('timezone')->default('America/Sao_Paulo');
             $table->rememberToken();
             $table->timestamps();
         });
