@@ -3,20 +3,26 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PasswordsControllerTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_example()
-    {
-        $response = $this->get('/');
+    use RefreshDatabase;
 
-        $response->assertStatus(200);
+    function test_renders_change_password_page()
+    {
+    }
+
+    function test_doesnt_allow_to_change_password_of_a_different_user()
+    {
+    }
+
+    function test_changes_the_password_if_current_password_matches()
+    {
+        // assert toast + redirect
+    }
+
+    function test_doesnt_change_password_if_current_password_doesnt_match()
+    {
     }
 }
