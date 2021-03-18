@@ -3876,7 +3876,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-listenForClicksAndSubmitsRelativeTo(document, 'body');
+listenForClicksAndSubmitsRelativeTo(document, '#root');
 customElements.define('reflinks-frame', /*#__PURE__*/function (_HTMLElement) {
   _inherits(_class, _HTMLElement);
 
@@ -4068,45 +4068,39 @@ function _submit() {
             data = target.tagName == 'FORM' ? new FormData(target) : null;
             updateButtonsDisableWith(target);
             clearValidationErrors(target);
-            _context2.next = 8;
-            return new Promise(function (resolve) {
-              return setTimeout(resolve, 1000);
-            });
-
-          case 8:
-            _context2.prev = 8;
-            _context2.next = 11;
+            _context2.prev = 6;
+            _context2.next = 9;
             return axios({
               method: method,
               url: url,
               data: data
             });
 
-          case 11:
+          case 9:
             response = _context2.sent;
             applyDirectives(response.data.directives, opts);
-            _context2.next = 18;
+            _context2.next = 16;
             break;
 
-          case 15:
-            _context2.prev = 15;
-            _context2.t0 = _context2["catch"](8);
+          case 13:
+            _context2.prev = 13;
+            _context2.t0 = _context2["catch"](6);
 
             if (_context2.t0.response.status == 422) {
               showValidationErrors(target, _context2.t0.response.data.errors);
             }
 
-          case 18:
-            _context2.prev = 18;
+          case 16:
+            _context2.prev = 16;
             restoreButtonsFromDisableWith(target);
-            return _context2.finish(18);
+            return _context2.finish(16);
 
-          case 21:
+          case 19:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[8, 15, 18, 21]]);
+    }, _callee2, null, [[6, 13, 16, 19]]);
   }));
   return _submit.apply(this, arguments);
 }
@@ -4121,6 +4115,11 @@ function applyDirectives(directives, opts) {
 
       if (directive.redirect) {
         navigate(directive.redirect, opts);
+      }
+
+      if (directive.action == 'append') {
+        var target = document.querySelector('#' + directive.target);
+        target.insertAdjacentHTML('beforeend', directive.html);
       }
     }
   } catch (err) {

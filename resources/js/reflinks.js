@@ -1,4 +1,4 @@
-listenForClicksAndSubmitsRelativeTo(document, 'body')
+listenForClicksAndSubmitsRelativeTo(document, '#root')
 
 customElements.define(
     'reflinks-frame',
@@ -113,8 +113,6 @@ async function submit(target, opts = {}) {
     updateButtonsDisableWith(target)
     clearValidationErrors(target)
 
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
     try {
         let response = await axios({ method, url, data })
         applyDirectives(response.data.directives, opts)
@@ -137,6 +135,11 @@ function applyDirectives(directives, opts) {
     for (let directive of directives) {
         if (directive.redirect) {
             navigate(directive.redirect, opts)
+        }
+
+        if (directive.action == 'append') {
+            let target = document.querySelector('#' + directive.target)
+            target.insertAdjacentHTML('beforeend', directive.html)
         }
     }
 }

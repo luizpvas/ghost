@@ -5,7 +5,7 @@
         x-show="open"
         @click.away="open = false"
         class="
-            z-10 origin-top-right absolute right-0 mt-2 w-56 rounded-sm shadow-lg focus:outline-none
+            z-10 origin-top-right absolute right-0 w-56 rounded-sm shadow-lg focus:outline-none
             bg-white dark:bg-gray-900 ring-1 ring-black ring-opacity-10 dark:ring-opacity-50
         "
     >

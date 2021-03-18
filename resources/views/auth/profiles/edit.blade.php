@@ -16,7 +16,7 @@
                 <div class="space-y-unit">
                     <x-form.avatar name="avatar" :value="$user->avatar" :label="__('Profile picture')" />
                     <x-form.input name="name" :value="$user->name" :label="__('Name')" />
-                    <x-form.input name="email" :value="$user->email" :label="__('E-mail address')" type="email" />
+                    {{-- <x-form.input name="email" :value="$user->email" :label="__('E-mail address')" type="email" /> --}}
                     <x-form.select name="timezone" :options="\App\Models\User::timezoneOptions()" :value="$user->timezone" :label="__('Timezone')" />
                     <x-button primary submit :data-disable-with="__('Saving changes...')">
                         {{ __('Save changes') }}
@@ -36,10 +36,15 @@
             </x-slot>
 
             <div class="space-y-unit">
-                <x-form.field name="password" :label="__('Password')">
-                    <div>
-                        <x-button secondary small>{{ __('Change password') }}</x-button>
+                <x-form.field name="email" :label="__('Email address')">
+                    <div class="flex items-center space-x-1">
+                        <input type="email" readonly value="{{ $user->email }}" class="text-base py-0 px-1.5 rounded-sm border border-gray-300 dark:border-gray-900 text-gray-800 dark:text-white dark:bg-gray-900" />
+                        <x-button secondary small>{{ __('Change email') }}</x-button>
                     </div>
+                </x-form.field>
+
+                <x-form.field name="password" :label="__('Password')">
+                    <x-button :href="route('auth.passwords.edit', $user)" secondary small>{{ __('Change password') }}</x-button>
                 </x-form.field>
 
                 <reflinks-frame id="{{ $user->domId('profile') }}">

@@ -96,13 +96,6 @@ class Relation
      */
     function deleteExistingAttachment()
     {
-        try {
-            $this->model->id;
-        } catch (\Exception $err) {
-            dd($this->model->toArray());
-            // dd($err);
-        }
-
         $attachments = Attachment::where([
             'attachable_type' => $this->model->getMorphClass(),
             'attachable_id' => $this->model->id,
@@ -125,6 +118,16 @@ class Relation
     function attached()
     {
         return $this->attachments()->isNotEmpty();
+    }
+
+    /**
+     * URL of the attachment.
+     * 
+     * @return string|null
+     */
+    function url()
+    {
+        return $this->attachments()->first() ? route('attachments.show', $this->attachments()->first()->id) : null;
     }
 
     /**

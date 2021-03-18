@@ -14,6 +14,7 @@ class CreateAttachmentsTable extends Migration
     public function up()
     {
         Schema::create('attachments', function (Blueprint $table) {
+            // $table->uuid('id')->primary();
             $table->id();
             $table->string('name');
             $table->string('variation_digest')->nullable();

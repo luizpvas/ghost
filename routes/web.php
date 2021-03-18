@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AttachmentsController;
 use App\Http\Controllers\Auth\ProfilesController;
 use App\Http\Controllers\Auth\RegistrationsController;
 use App\Http\Controllers\Auth\SessionsController;
 use App\Http\Controllers\Auth\SignInByEmailOnlyController;
 use App\Http\Controllers\Auth\SessionConfirmationsController;
+use App\Http\Controllers\PasswordsController;
 use App\Http\Controllers\WorkspacesController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,8 +36,13 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::resource('profiles', ProfilesController::class)->only(['edit', 'update'])
         ->parameter('profiles', 'user')
         ->middleware('auth');
+
+    Route::resource('passwords', PasswordsController::class)->only(['edit', 'update'])
+        ->parameter('passwords', 'user')
+        ->middleware('auth');
 });
 
 Route::middleware('auth')->group(function () {
+    Route::resource('attachments', AttachmentsController::class);
     Route::resource('workspaces', WorkspacesController::class);
 });

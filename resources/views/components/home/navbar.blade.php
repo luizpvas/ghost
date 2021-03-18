@@ -5,7 +5,13 @@
         <div>
             <x-dropdown>
                 <x-slot name="trigger">
-                    <button>{{ Auth::user()->name }}</button>
+                    <div class="flex items-center space-x-1 hover:bg-gray-100 rounded-full py-1 px-2">
+                        @if(Auth::user()->avatar->attached())
+                            <img src="{{ Auth::user()->avatar->url() }}" class="w-5 h-5 rounded-full" />
+                        @endif
+
+                        <button>{{ Auth::user()->name }}</button>
+                    </div>
                 </x-slot>
 
                 <x-dropdown.link :href="route('workspaces.index')" icon="heroicon.solid.grid">

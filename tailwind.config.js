@@ -21,6 +21,7 @@ module.exports = {
                 'Segoe UI Symbol',
                 'Noto Color Emoji',
             ],
+            mono: ['monospace'],
         },
         // https://ant.design/docs/spec/font#Font-Scale-&-Line-Height
         fontSize: {
@@ -34,13 +35,9 @@ module.exports = {
             unit: defaultTheme.spacing['4'],
         },
         colors: {
+            ...colors,
             transparent: 'transparent',
             current: 'currentColor',
-            white: colors.white,
-            black: colors.black,
-            gray: colors.coolGray,
-            green: colors.green,
-            red: colors.red,
             blue: {
                 50: '#e6f7ff',
                 100: '#bae7ff',

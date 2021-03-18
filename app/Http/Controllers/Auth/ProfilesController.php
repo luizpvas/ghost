@@ -30,13 +30,16 @@ class ProfilesController extends Controller
         $this->authorize('edit', $user);
 
         $validated = request()->validate([
-            'name'                      => ['sometimes', 'required'],
-            'avatar'                    => ['sometimes', 'file'],
+            'name' => ['sometimes', 'required'],
+            'timezone' => ['sometimes', 'required'],
+            'avatar' => ['sometimes', 'file'],
             'two_factor_authentication' => ['sometimes', 'required']
         ]);
 
         $user->update($validated);
 
-        return reflinks()->redirect('auth.profiles.edit', $user);
+        return reflinks()
+            ->toast('success', __('Profile updated.'))
+            ->redirect('auth.profiles.edit', $user);
     }
 }

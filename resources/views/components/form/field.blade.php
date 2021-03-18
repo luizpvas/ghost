@@ -1,4 +1,7 @@
-<div data-field="{{ $name }}">
+<div
+    data-field="{{ $name }}"
+    {{ $attributes->only(['x-data',' x-init']) }}
+>
     <label for="{{ $name }}" class="block text-gray-900 dark:text-gray-200">{{ $attributes->get('label', $name) }}</label>
 
     @if($attributes->has('hint'))
