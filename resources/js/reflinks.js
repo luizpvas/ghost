@@ -139,6 +139,7 @@ function applyDirectives(directives, opts) {
 
         if (directive.action == 'append') {
             let target = document.querySelector('#' + directive.target)
+            if (!target) return console.error(`Couldn't append to ${directive.target} - element not found on document.`)
             target.insertAdjacentHTML('beforeend', directive.html)
         }
     }

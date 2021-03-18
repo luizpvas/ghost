@@ -14,3 +14,21 @@ Illuminate\Testing\TestResponse::macro('assertReflinksRedirect', function ($rout
         }
     }
 });
+
+
+Illuminate\Testing\TestResponse::macro('assertReflinksToast', function ($type) {
+    $this->assertStatus(200);
+
+    $directives = $this->json('directives');
+
+    foreach ($directives as $directive) {
+        if (Arr::get($directive, 'action') == 'append') {
+            if ($directive['target'] == 'toast-container') {
+                PHPUnit::assertStringContainsString('data-toast-' . $type, $directive['html']);
+                return;
+            }
+        }
+    }
+
+    PHPUnit::fail('Expected response to contain a toast. It did not.');
+});

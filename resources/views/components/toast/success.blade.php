@@ -1,4 +1,5 @@
 <div
+    data-toast-success
     class="
         inline-flex items-center bg-white space-x-2 p-2 shadow-lg rounded-sm
         transform -translate-y-16 transition ease-out duration-300

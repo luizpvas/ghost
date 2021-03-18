@@ -41,29 +41,41 @@ class ProfilesControllerTest extends TestCase
         $this->withoutExceptionHandling();
 
         // Given we're authenticated
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $this->signIn();
 
         // When we submit the update profile form
-        $response = $this->putJson(route('auth.profiles.update', $user->id), [
+        $response = $this->putJson(route('auth.profiles.update', $this->user), [
             'name' => 'Updated name',
             'avatar' => UploadedFile::fake()->image('picture.png')
         ]);
 
         // Then our profile should reflect the updated values
         // $this->assertEquals('Updated name', $user->fresh()->name);
-        $this->assertTrue($user->fresh()->avatar->attached());
+        $this->assertTrue($this->user->fresh()->avatar->attached());
 
         // ... and we should be redirected back
-        $response->assertReflinksRedirect(route('auth.profiles.edit', $user->id));
+        $response->assertReflinksRedirect(route('auth.profiles.edit', $this->user));
     }
 
     function test_toggles_two_factor_authentication()
     {
         // Given we're authenticated
+        $this->signIn();
+
         // When we submit the form to enable two factor authentication
+        $this->putJson(route('auth.profiles.update', $this->user), [
+            'two_factor_authentication' => 'by_email',
+        ]);
+
         // Then two factor authentication should be enabled
+        $this->assertEquals('by_email', $this->user->fresh()->two_factor_authentication);
+
         // When we submit the form to disable two factor authentication
+        $this->putJson(route('auth.profiles.update', $this->user), [
+            'two_factor_authentication' => 'disabled',
+        ]);
+
         // Then two factor authentication should be disable
+        $this->assertEquals('disabled', $this->user->fresh()->two_factor_authentication);
     }
 }
